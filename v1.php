@@ -40,16 +40,17 @@ print_r($customTableColumns);
         echo $tableName;
         echo "\n".$columns;
         
+        $keyField = '';
         if(substr($tableName, -4) == 'cstm') {
             $keyField = 'id_c';
         } else {
-        $keyField = 'id';
+            $keyField = 'id';
         }
         echo "keyField $keyField";
 
         $sql = "SELECT $keyField, $columns from $tableName";
         echo $sql;
-        
+
         $result = $conn->query($sql);
         $numberOfUpdatesMade = 0;
 
@@ -58,9 +59,10 @@ print_r($customTableColumns);
             echo "\n Total Number of rows found : ".$result->num_rows."\n";
 
             while($row = $result->fetch_assoc()) {
+                echo "\n\n Reading Each row : ".json_encode($row);
                 $shouldUpdate = false;
                 foreach ($row as $key => $value) {
-                    //print "$key => $value\n";
+                    print "$key => $value\n";
                     if($key == $keyField) {
                         continue;
                     }
@@ -89,7 +91,7 @@ print_r($customTableColumns);
                             $setString = $setString + "$key = '$row[$key]',";
                         }
                     }
-                    $setString = substr($setString, 0, strlen($setString)-1 );
+                    //$setString = substr($setString, 0, strlen($setString)-1 );
 
                     $updateQuery = "UPDATE ".$tableName." SET ".$setString." WHERE ".$keyField." = '".$row[$keyField]."'";
                     echo "\n\n Update Query : ".$updateQuery;
