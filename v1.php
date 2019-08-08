@@ -22,7 +22,7 @@ include "library/functions.php";
         die("Connection failed: " . $conn->connect_error);
     }
 
-    echo "\n--------------------- Connected successfully --------------------------------------\n";
+    debugLog("--------------------- Connected successfully --------------------------------------");
 
 //--- PHASE : 2 ------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
@@ -30,8 +30,6 @@ include "library/functions.php";
 $customTableNames = array("ds_customers_cstm","cases","cases_cstm");
 $customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name, description", "summary_c");
 
-print_r($customTableNames);
-print_r($customTableColumns);
 
     for($i = 0 ; $i < count($customTableNames); $i++ ) {
         $tableName = $customTableNames[$i];
@@ -45,16 +43,16 @@ print_r($customTableColumns);
             $keyField = 'id';
         }
 
-
+        debugLog("------------ Connected To Table : $tableName ; keyValue = $keyValue -------------------------------");
+        
         $sql = "SELECT $keyField, $columns from $tableName";
-        echo $sql;
 
         $result = $conn->query($sql);
         $numberOfUpdatesMade = 0;
 
         if ($result->num_rows > 0) {
             
-            echo "\n Total Number of rows found : ".$result->num_rows."\n";
+            debugLog(" Total Number of rows found : ".$result->num_rows);
 
             while($row = $result->fetch_assoc()) {
                 $shouldUpdate = false;
@@ -73,8 +71,7 @@ print_r($customTableColumns);
                 }
                 if($shouldUpdate == true) {
                     // update the row in table for given id_c / id
-                    echo ("\n\nUpdating Following Record : ");
-                    echo (json_encode($row));
+                    debugLog("Updating Following Record : ". json_encode($row));
                     $numberOfUpdatesMade++;
 
                     // creting update query-------
@@ -90,15 +87,17 @@ print_r($customTableColumns);
                     $setString = substr($setString, 0, strlen($setString)-1 );
 
                     $updateQuery = "UPDATE ".$tableName." SET ".$setString." WHERE ".$keyField." = '".$row[$keyField]."'";
-                    echo "\n\n Update Query : ".$updateQuery;
-                    
+                    debugLog("Update Query : ".$updateQuery);
+
                 }
             }
         } else {
             echo "0 results";
         }
 
-        echo ("\n\n----------- Number of Updates Made : ".$numberOfUpdatesMade."-------------------------------");
+        debugLog("----------- Number of Updates Made : ".$numberOfUpdatesMade."-------------------------------");
+        debugLog("");
+
     }
 
 //--- WRAP UP --------------------------------------------------------------------------------
@@ -109,9 +108,8 @@ print_r($customTableColumns);
     echo "\n";
 
 
-    // -------
 
-    //--- Specific Functions for Database Scrapper --------------------------------------------------------------------
+//--- Specific Functions for Database Scrapper --------------------------------------------------------------------
 
 function checkStringFor16DigitNumberAndLetMeKnowToUpdate($str) {
     
@@ -167,5 +165,20 @@ $returnString = $input16DigitNumber;
     return $returnString;
 }
 
+
+/**This Metod will be used for logging purpose  */
+function debugLog($message) {
+    $logfile = './logs';
+
+        if (!file_exists($logfile)) {
+            mkdir($logfile, 0777, true);
+        }
+
+        $log_file_data = $logfile.'/logs_'.date('d-M-Y').'.log';
+    $now     = "\n[" . date("Y-M-d H:i:s") . "] ";
+    $message = $now . $message;
+    error_log($message, 3, $log_file_data);
+    echo("\n".$message."\n");
+}
 
 ?>
