@@ -7,8 +7,13 @@
 
 header("Access-Control-Allow-Origin: *");
 
-include "config/constants.php";
-include "library/functions.php";
+define('SUGAR_DB_HOST', 'localhost');
+define('SUGAR_DB_USER', 'root');
+define('SUGAR_DB_NAME', 'zanaco_suitecrm');
+
+$customTableNames = array("ds_customers_cstm","cases","cases_cstm");
+$customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name, description", "summary_c");
+
 
 
 //--- PHASE : 1 -----------------------------------------------------------------------------
@@ -26,10 +31,6 @@ include "library/functions.php";
 
 //--- PHASE : 2 ------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
-
-$customTableNames = array("ds_customers_cstm","cases","cases_cstm");
-$customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name, description", "summary_c");
-
 
     for($i = 0 ; $i < count($customTableNames); $i++ ) {
         $tableName = $customTableNames[$i];
@@ -88,7 +89,8 @@ $customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name
 
                     $updateQuery = "UPDATE ".$tableName." SET ".$setString." WHERE ".$keyField." = '".$row[$keyField]."'";
                     debugLog("Update Query : ".$updateQuery);
-
+                    $result = $conn->query($updateQuery);
+                    debugLog($result);
                 }
             }
         } else {
@@ -112,11 +114,6 @@ $customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name
 //--- Specific Functions for Database Scrapper --------------------------------------------------------------------
 
 function checkStringFor16DigitNumberAndLetMeKnowToUpdate($str) {
-    
-    /*$str = "this is a 1234542398676545 16digit number 987645672345098700
-    thissis line  2 of thew same string 87873388837336t36766272828828783288728278278282
-    linr 3865884467444847644746474657 85785856474647 47477575757674  47474747474657564575657485";
-    */
 
     $shouldUpdate = false;
     $matches = array();
@@ -143,11 +140,7 @@ function checkStringFor16DigitNumberAndLetMeKnowToUpdate($str) {
     $tempArr['shouldUpdate'] = $shouldUpdate;
     $tempArr['str'] = $str;
 
-    /* output : this is a 1234********6545 16digit number 9876********098700
-    thissis line  2 of thew same string 87873388837336t3676********28783288********8282
-    linr 3865********4847644746474657 85785856474647 47477575757674  4747********57564575657485
-    */
-return $tempArr;
+    return $tempArr;
 }
 
 
