@@ -28,4 +28,7 @@ define('SUGAR_DB_HOST', 'localhost');
 define('SUGAR_DB_USER', 'root');
 define('SUGAR_DB_NAME', 'zanaco_suitecrm');
 
+define('CUSTOM_TABLE_NAMES', ["ds_customers_cstm","cases","cases_cstm"]);
+define('CUSTOM_TABLE_COLUMNS', ["account_number_c, nrc_c, physical_address_c", "name, description", "summary_c"]);
+
 ?>

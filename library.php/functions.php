@@ -1,5 +1,4 @@
 <?php
-include './customerSpecificFunction.php';
 //-- FUNCTIONS --------------------------------------------------------------------------
 
 /**This Metod will be used to call API with POST method  */
@@ -23,14 +22,11 @@ function callAPIPOST($url, $payload = "{}", $headers = array(), $logIdentifier =
     $err = curl_error($curl);
     debugLog(" callAPIPOST : ".$logIdentifier);
     debugLog("Request URL : ".$url);
-    debugLog(var_dump($headers));
-    debugLog(gettype($headers));
     debugLog("Headers :".json_encode($headers));
     debugLog("Payload :".json_encode($payload));
     debugLog("Resposne : ".$response);
     curl_close($curl);
-    //curl_close($curl);
-
+    
     if ($err) {
         debugLog($logIdentifier." : cURL Error # : " . $err);
     } else {
@@ -231,7 +227,7 @@ function FileSizeConvert($bytes)
 
 
 
-//---------------------------------------------------------------------------------------------
+//--- CustomerManager Functions --------------------------------------------------------------------------------
 
 function pingSession($sessionId) {
     $headers = array();
@@ -294,17 +290,6 @@ function getSessionId($userId, $password, $force="true") {
 // check the db for live sessionId of CustomerManager; 
 $isAlreadyLoggedIn = false;
    $query = "select ush.session_id, ush.login_time, users.user_id, users.user_type from  (select * from user_session_history where logout_time is null ) as ush join users on users.user_id = ush.user_id where users.user_type = 'CustomerManager'";
-/*    debugLog("Making Query For to Check Live CustomerManager User Session");
-    debugLog("Query : ".$query);
-    echo $query.'\n';
-    $result = ameyoDBQuery($query);
-    debugLog("Result : ".$result).'\n';
-    //echo "Result without decoding: ".$result.'\n';
-    $result = json_decode($result);
-    echo "Result after decodigng--not yet";
-    print_r($result);
-    echo "Number OF Records :".count($result).'\n';
-*/
 
         debugLog($query);
         $result = ameyoDBQuery($query);
@@ -474,6 +459,64 @@ function validatePsqlTimeStamp($psqltime) {
         } else 
             return false;
     }
+
+// ----------------------------------------------------------------------------------------------------------------
+
+//--- Specific Functions for Database Scrapper --------------------------------------------------------------------
+
+function checkStringFor16DigitNumberAndLetMeKnowToUpdate($str) {
+    
+    /*$str = "this is a 1234542398676545 16digit number 987645672345098700
+    thissis line  2 of thew same string 87873388837336t36766272828828783288728278278282
+    linr 3865884467444847644746474657 85785856474647 47477575757674  47474747474657564575657485";
+    */
+
+    $shouldUpdate = false;
+    $matches = array();
+    preg_match_all('/[0-9]{16}+/', $str, $matches);
+
+    if ( count($matches) ) {        
+        $matchedValues = $matches[0];
+        $replacementValues = array();
+
+        if(count($matchedValues)>0){
+            $shouldUpdate = true;
+        }
+
+        for ($i =0 ; $i<count($matchedValues); $i++) {
+            $replacementValues[$i] = hash16digit($matchedValues[$i]);
+        }
+        //print_r($matchedValues);
+        //print_r($replacementValues);
+
+        $str = str_replace($matchedValues, $replacementValues, $str);
+    }
+
+    $tempArr =  array();
+    $tempArr['shouldUpdate'] = $shouldUpdate;
+    $tempArr['str'] = $str;
+
+    /* output : this is a 1234********6545 16digit number 9876********098700
+    thissis line  2 of thew same string 87873388837336t3676********28783288********8282
+    linr 3865********4847644746474657 85785856474647 47477575757674  4747********57564575657485
+    */
+return $tempArr;
+}
+
+
+
+
+/** This function will hash the 16 digit number */
+function hash16digit($input16DigitNumber) {
+$returnString = $input16DigitNumber;
+
+    //cross check length of string
+    if(strlen($input16DigitNumber) == 16) {
+        $returnString = substr($input16DigitNumber, 0, 4)."********".substr($input16DigitNumber, -4);
+    }
+
+    return $returnString;
+}
 
 
 

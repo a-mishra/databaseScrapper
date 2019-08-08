@@ -1,18 +1,21 @@
 <?php
 
-    $str = "this is a 1234542398676545 16digit number 987645672345098700
+    /*$str = "this is a 1234542398676545 16digit number 987645672345098700
     thissis line  2 of thew same string 87873388837336t36766272828828783288728278278282
     linr 3865884467444847644746474657 85785856474647 47477575757674  47474747474657564575657485";
-
+    */
+    $shouldUpdate = false;
     $matches = array();
     preg_match_all('/[0-9]{16}+/', $str, $matches);
 
-    //print_r($matches);
-
-    if ( count($matches) ) {
-        $shouldUpdate = true;
+    if ( count($matches) ) {        
         $matchedValues = $matches[0];
         $replacementValues = array();
+
+        if(count($matchedValues)>0){
+            $shouldUpdate = true;
+        }
+
         for ($i =0 ; $i<count($matchedValues); $i++) {
             $replacementValues[$i] = hash16digit($matchedValues[$i]);
         }
