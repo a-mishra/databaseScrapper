@@ -7,8 +7,8 @@
 
 header("Access-Control-Allow-Origin: *");
 
-include "config/constants.php";
-include "library/functions.php";
+require "config/constants.php";
+require "library/functions.php";
 
 
 //--- PHASE : 1 -----------------------------------------------------------------------------
@@ -63,8 +63,8 @@ print_r($customTableColumns);
                 $shouldUpdate = false;
                 foreach ($row as $key => $value) {
                     print "$key => $value\n";
-                    if($key == $keyField) {
-                        continue;
+                    if( 1==0) {
+                    //    continue;
                     }
                     else {
                         $tempArr = array();
