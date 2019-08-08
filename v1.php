@@ -27,8 +27,8 @@ include "library/functions.php";
 //--- PHASE : 2 ------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
 
-$customTableNames = CUSTOM_TABLE_NAMES;
-$customTableColumns = CUSTOM_TABLE_COLUMNS;
+$customTableNames = array("ds_customers_cstm","cases","cases_cstm");
+$customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name, description", "summary_c");
 
 print_r($customTableNames);
 print_r($customTableColumns);
