@@ -73,7 +73,6 @@ $customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name
                 if($shouldUpdate == true) {
                     // update the row in table for given id_c / id
                     debugLog("Updating Following Record : ". json_encode($row));
-                    $numberOfUpdatesMade++;
 
                     // creting update query-------
                     $setString = ' ';
@@ -89,12 +88,16 @@ $customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name
 
                     $updateQuery = "UPDATE ".$tableName." SET ".$setString." WHERE ".$keyField." = '".$row[$keyField]."'";
                     debugLog("Update Query : ".$updateQuery);
-                    $result = $conn->query($updateQuery);
-                    debugLog($result);
+                    if ($conn->query($updateQuery) === TRUE) {
+                        $numberOfUpdatesMade++;
+                       debugLog("Record updated successfully");
+                    } else {
+                       debugLog("Error updating record: " . $conn->error);
+                    }
                 }
             }
         } else {
-            echo "0 results";
+           debugLog("0 results");
         }
 
         debugLog("----------- Number of Updates Made : ".$numberOfUpdatesMade."-------------------------------");
