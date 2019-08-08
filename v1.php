@@ -37,8 +37,6 @@ print_r($customTableColumns);
         $tableName = $customTableNames[$i];
         $columns = $customTableColumns[$i]; 
 
-        echo $tableName;
-        echo "\n".$columns;
         
         $keyField = '';
         if(substr($tableName, -4) == 'cstm') {
@@ -46,7 +44,7 @@ print_r($customTableColumns);
         } else {
             $keyField = 'id';
         }
-        echo "keyField $keyField";
+
 
         $sql = "SELECT $keyField, $columns from $tableName";
         echo $sql;
@@ -59,12 +57,10 @@ print_r($customTableColumns);
             echo "\n Total Number of rows found : ".$result->num_rows."\n";
 
             while($row = $result->fetch_assoc()) {
-                echo "\n\n Reading Each row : ".json_encode($row);
                 $shouldUpdate = false;
                 foreach ($row as $key => $value) {
-                    print "$key => $value\n";
-                    if( 1==0) {
-                    //    continue;
+                    if($key == $keyField) {
+                        continue;
                     }
                     else {
                         $tempArr = array();
@@ -82,16 +78,16 @@ print_r($customTableColumns);
                     $numberOfUpdatesMade++;
 
                     // creting update query-------
-                    $setString = '';
+                    $setString = ' ';
                     foreach ($row as $key => $value) {
                         if($key == $keyField) {
                             continue;
                         }
                         else {
-                            $setString = $setString + "$key = '$row[$key]',";
+                            $setString = $setString. "$key = '$row[$key]',";
                         }
                     }
-                    //$setString = substr($setString, 0, strlen($setString)-1 );
+                    $setString = substr($setString, 0, strlen($setString)-1 );
 
                     $updateQuery = "UPDATE ".$tableName." SET ".$setString." WHERE ".$keyField." = '".$row[$keyField]."'";
                     echo "\n\n Update Query : ".$updateQuery;
