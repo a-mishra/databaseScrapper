@@ -33,6 +33,9 @@ $customTableColumns = CUSTOM_TABLE_COLUMNS;
     for($i = 0 ; $i < count($customTableNames); $i++ ) {
         $tableName = $customTableNames[$i];
         $columns = $customTableColumns[$i]; 
+
+        echo $tableName;
+        echo "\n".$columns;
         
         if(substr($tableName, -4) == 'cstm'){
             $keyField = 'id_c';
