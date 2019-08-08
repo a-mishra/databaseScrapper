@@ -50,6 +50,8 @@ if ($result->num_rows > 0) {
         }
         if($shouldUpdate == true) {
             // update the row in table for given id_c
+            echo ("Updating Following Record : ");
+            echo (json_encode($row));
         }
     }
 } else {
@@ -66,10 +68,12 @@ echo "\n";
 //-- Inline Functions -----------------------------------------------------------------------
 
 function checkStringFor16DigitNumberAndLetMeKnowToUpdate($str) {
+    
     /*$str = "this is a 1234542398676545 16digit number 987645672345098700
     thissis line  2 of thew same string 87873388837336t36766272828828783288728278278282
     linr 3865884467444847644746474657 85785856474647 47477575757674  47474747474657564575657485";
     */
+    
     $shouldUpdate = false;
     $matches = array();
     preg_match_all('/[0-9]{16}+/', $str, $matches);
