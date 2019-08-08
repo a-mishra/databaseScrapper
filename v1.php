@@ -30,6 +30,9 @@ include "library/functions.php";
 $customTableNames = CUSTOM_TABLE_NAMES;
 $customTableColumns = CUSTOM_TABLE_COLUMNS;
 
+print_r($customTableNames);
+print_r($customTableColumns);
+
     for($i = 0 ; $i < count($customTableNames); $i++ ) {
         $tableName = $customTableNames[$i];
         $columns = $customTableColumns[$i]; 
