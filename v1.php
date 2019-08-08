@@ -178,7 +178,7 @@ function debugLog($message) {
     $now     = "\n[" . date("Y-M-d H:i:s") . "] ";
     $message = $now . $message;
     error_log($message, 3, $log_file_data);
-    echo("\n".$message."\n");
+    echo("\n".$message);
 }
 
 ?>
