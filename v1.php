@@ -40,14 +40,16 @@ print_r($customTableColumns);
         echo $tableName;
         echo "\n".$columns;
         
-        if(substr($tableName, -4) == 'cstm'){
+        if(substr($tableName, -4) == 'cstm') {
             $keyField = 'id_c';
         } else {
         $keyField = 'id';
         }
+        echo "keyField $keyField";
 
         $sql = "SELECT $keyField, $columns from $tableName";
-
+        echo $sql;
+        
         $result = $conn->query($sql);
         $numberOfUpdatesMade = 0;
 
