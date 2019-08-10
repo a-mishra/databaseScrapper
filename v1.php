@@ -44,7 +44,7 @@ $customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name
             $keyField = 'id';
         }
 
-        debugLog("------------ Connected To Table : $tableName ; keyValue = $keyValue -------------------------------");
+        debugLog("------------ Connected To Table : $tableName ; keyField = $keyField -------------------------------");
         
         $sql = "SELECT $keyField, $columns from $tableName";
 
@@ -57,6 +57,7 @@ $customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name
 
             while($row = $result->fetch_assoc()) {
                 $shouldUpdate = false;
+                $originalValues = {};
                 foreach ($row as $key => $value) {
                     if($key == $keyField) {
                         continue;
@@ -67,12 +68,15 @@ $customTableColumns = array("account_number_c, nrc_c, physical_address_c", "name
                         if ($tempArr['shouldUpdate'] == true) {
                             $shouldUpdate = true;
                         }
+                        $originalValues[$key] = $row[$key];
                         $row[$key] =  $tempArr['str'];
                     }
                 }
                 if($shouldUpdate == true) {
                     // update the row in table for given id_c / id
-                    debugLog("Updating Following Record : ". json_encode($row));
+                    debugLog("Updating  Record : -------------------");
+                    debugLog("Original Value : ".json_encode($originalValues));
+                    debugLog("New Values : ".json_encode($row));
 
                     // creting update query-------
                     $setString = ' ';
@@ -133,8 +137,6 @@ function checkStringFor16DigitNumberAndLetMeKnowToUpdate($str) {
         for ($i =0 ; $i<count($matchedValues); $i++) {
             $replacementValues[$i] = hash16digit($matchedValues[$i]);
         }
-        //print_r($matchedValues);
-        //print_r($replacementValues);
 
         $str = str_replace($matchedValues, $replacementValues, $str);
     }
